@@ -65,6 +65,9 @@ void tigrPosition(Tigr* bmp, int scale, int windowW, int windowH, int out[4]);
 #define GLES_SILENCE_DEPRECATION
 #include <OpenGLES/ES3/gl.h>
 #endif
+#if __SWITCH__
+#include <glad/glad.h>
+#endif
 
 typedef struct {
 #ifdef _WIN32
@@ -106,6 +109,9 @@ typedef struct {
     XIC ic;
 #endif  // __ANDROID__
 #endif  // __linux__
+#if __SWITCH__
+    EGLContext context;
+#endif  // __SWITCH__
 #endif  // TIGR_GAPI_GL
 
     Tigr* widgets;
@@ -119,24 +125,24 @@ typedef struct {
     int scale;
     int pos[4];
     int lastChar;
-    char keys[256], prev[256];
-#if defined(__ANDROID__)
-    char released[256];
+    int keys[256], prev[256];
+#if __ANDROID__
+    int released[256];
 #endif  // __ANDROID__
 #if defined(__MACOS__)
     int mouseInView;
     int mouseButtons;
     double frameTime;
 #endif  // __MACOS__
-#if defined(__linux__) || defined(__IOS__)
+#if __linux__ || __IOS__ || __SWITCH__
     int mouseButtons;
     int mouseX;
     int mouseY;
-#endif  // __linux__ __IOS__
-#if defined(__ANDROID__) || defined(__IOS__)
+#endif  // __linux__ __IOS__ __SWITCH__
+#if __ANDROID__ || __IOS__ || __SWITCH__
     int numTouchPoints;
     TigrTouchPoint touchPoints[MAX_TOUCH_POINTS];
-#endif  // __ANDROID__ __IOS__
+#endif  // __ANDROID__ __IOS__ __SWITCH__
 #if defined(_WIN32) || defined(__linux__) || defined(__MACOS__)
     float scrollDeltaX;
     float scrollDeltaY;

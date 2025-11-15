@@ -12,6 +12,9 @@
 #include <GL/glext.h>
 #endif
 #endif
+#if __SWITCH__
+#include <glad/glad.h>
+#endif
 extern const char tigr_upscale_gl_vs[], tigr_upscale_gl_fs[], tigr_default_fx_gl_fs[];
 extern const int tigr_upscale_gl_vs_size, tigr_upscale_gl_fs_size, tigr_default_fx_gl_fs_size;
 
@@ -320,6 +323,10 @@ void tigrGAPICreate(Tigr* bmp) {
     tigrGL33Init(bmp);
 #endif
 
+#ifdef __SWITCH__
+    gladLoadGL();
+#endif
+
     if (!gl->gl_legacy) {
         // create vao
         glGenVertexArrays(1, &gl->vao);
@@ -389,7 +396,7 @@ void tigrGAPIDraw(int legacy, GLuint uniform_model, GLuint tex, Tigr* bmp, int x
         glUniformMatrix4fv(uniform_model, 1, GL_FALSE, model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     } else {
-#if !(__APPLE__ || __ANDROID__)
+#if !(__APPLE__ || __ANDROID__ || __SWITCH__)
         glBegin(GL_QUADS);
         glTexCoord2f(1.0f, 0.0f);
         glVertex2i(x2, y1);
@@ -410,7 +417,11 @@ void tigrGAPIPresent(Tigr* bmp, int w, int h) {
     TigrInternal* win = tigrInternal(bmp);
     GLStuff* gl = &win->gl;
 
+#ifdef __SWITCH__
+    glViewport(0, 1080-h, w, h); // calculate from window size
+#else
     glViewport(0, 0, w, h);
+#endif
     if (!gl->gl_user_opengl_rendering) {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -426,7 +437,7 @@ void tigrGAPIPresent(Tigr* bmp, int w, int h) {
         glUniformMatrix4fv(gl->uniform_projection, 1, GL_FALSE, projection);
         glUniform4f(gl->uniform_parameters, win->p1, win->p2, win->p3, win->p4);
     } else {
-#if !(__APPLE__ || __ANDROID__)
+#if !(__APPLE__ || __ANDROID__ || __SWITCH__)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, w, h, 0, -1.0f, 1.0f);

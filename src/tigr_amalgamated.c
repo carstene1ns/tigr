@@ -16,5 +16,6 @@
 #include "tigr_android.h"
 #include "tigr_linux.c"
 #include "tigr_android.c"
+#include "tigr_switch.c"
 #include "tigr_gl.c"
 #include "tigr_utils.c"

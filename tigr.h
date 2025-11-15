@@ -318,7 +318,7 @@ int tigrKeyHeld(Tigr *bmp, int key);
 int tigrReadChar(Tigr *bmp);
 
 // Show / hide virtual keyboard.
-// (Only available on iOS / Android)
+// (Only available on iOS / Android / Switch)
 void tigrShowKeyboard(int show);
 
 
